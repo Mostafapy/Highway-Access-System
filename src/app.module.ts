@@ -7,11 +7,14 @@ import configuration from './config/configuration';
 import { validationSchema } from './config/validation';
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    isGlobal: true,
-    load: [configuration],
-    validationSchema,
-  }), JoiPipeModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+      validationSchema,
+    }),
+    JoiPipeModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
