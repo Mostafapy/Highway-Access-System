@@ -1,6 +1,8 @@
+import { hashPassword } from 'auth/helpers/passwords.helper';
 import { Car } from 'cars/entities/car.entity';
-import { Expose } from 'class-transformer';
+import { Exclude, Expose, instanceToPlain } from 'class-transformer';
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -19,7 +21,8 @@ export class Employee {
 
   @Column({ unique: true })
   email: string;
-  
+
+  @Exclude()
   @Column()
   password: string;
 
@@ -39,4 +42,17 @@ export class Employee {
   @UpdateDateColumn({ name: 'updated_at' })
   @Expose({ name: 'updated_at' })
   updatedAt?: Date;
+
+  constructor(partial: Partial<Employee>) {
+    Object.assign(this, partial);
+  }
+
+  toJSON() {
+    return instanceToPlain(this);
+  }
+
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await hashPassword(this.password);
+  }
 }
