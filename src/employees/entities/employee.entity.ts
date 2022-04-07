@@ -17,6 +17,12 @@ export class Employee {
   @Column({ length: 255 })
   name: string;
 
+  @Column({ unique: true })
+  email: string;
+  
+  @Column()
+  password: string;
+
   @Column()
   position: string;
 
