@@ -27,15 +27,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (last === 'login' || last === 'signup') {
       return user;
     }
-    if (!user) {
-      throw new UnauthorizedException();
+    if (err || !user) {
+      throw err || new UnauthorizedException();
     }
-
-    if (err) {
-      // User nest exception filter
-      throw err;
-    }
-
     return user;
   }
 }
