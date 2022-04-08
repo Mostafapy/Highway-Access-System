@@ -19,7 +19,7 @@ export class CarService {
 
     const encryptedPlateNumber = await encrypt(plateNumber);
 
-    return this.carRepository.create({
+    return this.carRepository.save({
       brand,
       model,
       plateNumber: encryptedPlateNumber,

@@ -10,13 +10,13 @@ export class CarController {
   constructor(private readonly carService: CarService) {}
 
   @AuthProtect()
-  @Post()
+  @Post('')
   create(@AuthUser() user: Employee, @Body() body: CreateCarDto) {
     return this.carService.create(user, body);
   }
 
   @AuthProtect()
-  @Get()
+  @Get('')
   findAll(@AuthUser() user: Employee) {
     return this.carService.findAll(user);
   }
