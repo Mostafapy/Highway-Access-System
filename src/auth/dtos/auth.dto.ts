@@ -1,6 +1,6 @@
 import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class SignupDto {
   @ApiProperty({ type: String, required: true })
@@ -30,7 +30,7 @@ export class SignupDto {
 
   @ApiProperty({ type: Boolean, required: true })
   @IsNotEmpty()
-  @IsNumber()
+  @IsBoolean()
   isAdmin: boolean;
 }
 
