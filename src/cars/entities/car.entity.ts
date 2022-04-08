@@ -54,11 +54,11 @@ export class Car {
   @JoinColumn({ name: 'access_card_uuid' })
   accessCard: AccessCard;
 
+  @ApiResponseProperty({ type: Date })
   @CreateDateColumn({ name: 'created_at' })
-  @Expose({ name: 'created_at' })
   createdAt?: Date;
 
+  @ApiResponseProperty({ type: Date })
   @UpdateDateColumn({ name: 'updated_at' })
-  @Expose({ name: 'updated_at' })
   updatedAt?: Date;
 }
