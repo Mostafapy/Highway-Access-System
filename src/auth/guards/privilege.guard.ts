@@ -4,7 +4,7 @@ import { Reflector } from '@nestjs/core';
 const PRIVILEGES_KEY = 'privileges';
 
 @Injectable()
-export class PrivilegeGuard implements CanActivate {
+export class PrivilegesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> {

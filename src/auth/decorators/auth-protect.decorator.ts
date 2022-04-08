@@ -1,12 +1,14 @@
 import { applyDecorators, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'auth/guards';
 import { ApiBearerAuth, ApiUnauthorizedResponse } from '@nestjs/swagger';
-import { Privilege } from './privilege.decorator';
+import { Privileges } from './privilege.decorator';
+import { Privilege } from 'auth/enums/privilege.enum';
+import { PrivilegesGuard } from 'auth/guards/privilege.guard';
 
-export function AuthProtect(...privileges: string[]) {
+export function AuthProtect(...privilegesArr: Privilege[]) {
   return applyDecorators(
-    Privilege(...privileges),
-    UseGuards(JwtAuthGuard),
+    Privileges(...privilegesArr),
+    UseGuards(JwtAuthGuard, PrivilegesGuard),
     ApiBearerAuth(),
     ApiUnauthorizedResponse({ description: 'Unauthorized' }),
   );
