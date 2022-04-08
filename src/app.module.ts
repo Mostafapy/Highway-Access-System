@@ -2,7 +2,6 @@ import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AccessCardModule } from 'access-cards/access-card.module';
 import { AuthModule } from 'auth/auth.module';
 import { CarModule } from 'cars/car.module';
 import { MYSQL_CONFIG_OPTIONS } from 'config/mysql-configuration';
@@ -26,7 +25,6 @@ import { validationSchema } from './config/validation';
     JoiPipeModule,
     EmployeeModule,
     CarModule,
-    AccessCardModule,
     AuthModule,
   ],
   controllers: [AppController],
