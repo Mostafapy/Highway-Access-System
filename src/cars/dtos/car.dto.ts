@@ -18,17 +18,17 @@ export class CreateCarDto {
 }
 
 export class UpdateCarDto {
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, type: String })
   @IsOptional()
   @IsString()
   brand?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, type: String })
   @IsOptional()
   @IsString()
   model?: string;
 
-  @ApiProperty({ required: false, name: 'plate_number', minLength: 5 })
+  @ApiProperty({ required: false, name: 'plate_number', minLength: 5, type: String })
   @Expose({ name: 'plate_number' })
   @IsOptional()
   @IsString()
