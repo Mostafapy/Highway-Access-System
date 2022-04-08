@@ -13,8 +13,8 @@ import {
 
 @Entity('employees')
 export class Employee {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  uuid: string;
 
   @Column({ length: 255 })
   name: string;

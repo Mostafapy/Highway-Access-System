@@ -9,14 +9,14 @@ import {
 
 @Entity('access_cards')
 export class AccessCard {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  uuid: string;
 
   @Column({
     type: 'decimal',
     precision: 15,
     scale: 2,
-    default: 0,
+    default: 1000,
     transformer: {
       to: (val: number) => val && val.toString(),
       from: (val: string) => parseFloat(val),
