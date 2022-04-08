@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
 
 export class CreateCarDto {
@@ -11,8 +10,7 @@ export class CreateCarDto {
   @IsString()
   model: string;
 
-  @ApiProperty({ required: true, name: 'plate_number', minLength: 5 })
-  @Expose({ name: 'plate_number' })
+  @ApiProperty({ required: true, minLength: 5 })
   @IsString()
   plateNumber: string;
 }
@@ -28,8 +26,7 @@ export class UpdateCarDto {
   @IsString()
   model?: string;
 
-  @ApiProperty({ required: false, name: 'plate_number', minLength: 5, type: String })
-  @Expose({ name: 'plate_number' })
+  @ApiProperty({ required: false, minLength: 5, type: String })
   @IsOptional()
   @IsString()
   plateNumber?: string;
