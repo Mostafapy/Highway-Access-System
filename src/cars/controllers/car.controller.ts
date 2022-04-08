@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { AuthProtect } from 'auth/decorators';
 import { AuthUser } from 'auth/decorators/auth-user.decorator';
 import { CreateCarDto, UpdateCarDto } from 'cars/dtos/car.dto';
 import { Car } from 'cars/entities/car.entity';
 import { CarService } from 'cars/services/car.service';
 import { Employee } from 'employees/entities/employee.entity';
-import { Pagination } from 'shared/decorators';
-import { AuthProtect } from 'shared/decorators';
+import { Pagination } from 'shared/decorators/pagination.decorator';
 import { ResponseDto } from 'shared/dtos/response.dto';
 import { getPageDescriptor } from 'shared/helpers';
 import { PaginatedData, PaginationParams } from 'shared/types/pagination.type';
