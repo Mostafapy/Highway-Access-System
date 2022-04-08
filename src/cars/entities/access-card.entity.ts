@@ -16,7 +16,6 @@ export class AccessCard {
     type: 'decimal',
     precision: 15,
     scale: 2,
-    default: 10,
     transformer: {
       to: (val: number) => val && val.toString(),
       from: (val: string) => parseFloat(val),
