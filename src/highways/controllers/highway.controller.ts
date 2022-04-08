@@ -1,8 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { AuthProtect } from 'auth/decorators';
+import { Privilege } from 'auth/enums/privilege.enum';
 import { CreateHighWayDto, UpdateHighWayDto } from 'highways/dtos/highway.dto';
 import { Highway } from 'highways/entities/highway.entity';
 import { HighwayService } from 'highways/services/highway.service';
-import { AuthProtect, Pagination } from 'shared/decorators';
+import { Pagination } from 'shared/decorators/pagination.decorator';
 import { ResponseDto } from 'shared/dtos/response.dto';
 import { getPageDescriptor } from 'shared/helpers';
 import { PaginatedData, PaginationParams } from 'shared/types/pagination.type';
@@ -11,7 +13,7 @@ Controller('v1/highways');
 export class HighwayController {
   constructor(private readonly highwayService: HighwayService) {}
 
-  @AuthProtect()
+  @AuthProtect(Privilege.ADMIN)
   @Post('')
   async create(@Body() body: CreateHighWayDto): Promise<ResponseDto<Highway>> {
     const data = await this.highwayService.create(body);
@@ -23,7 +25,7 @@ export class HighwayController {
     };
   }
 
-  @AuthProtect()
+  @AuthProtect(Privilege.ADMIN)
   @Get('')
   async findAll(
     @Pagination() pagination: PaginationParams,
@@ -40,7 +42,7 @@ export class HighwayController {
     };
   }
 
-  @AuthProtect()
+  @AuthProtect(Privilege.ADMIN)
   @Get(':uuid')
   async findOne(@Param('uuid') uuid: string): Promise<ResponseDto<Highway>> {
     const data = await this.highwayService.findOne(uuid);
@@ -52,7 +54,7 @@ export class HighwayController {
     };
   }
 
-  @AuthProtect()
+  @AuthProtect(Privilege.ADMIN)
   @Put(':uuid')
   async update(
     @Param('uuid') uuid: string,
@@ -67,7 +69,7 @@ export class HighwayController {
     };
   }
 
-  @AuthProtect()
+  @AuthProtect(Privilege.ADMIN)
   @Delete(':uuid')
   async remove(@Param('uuid') uuid: string): Promise<ResponseDto<any>> {
     await this.highwayService.delete(uuid);
