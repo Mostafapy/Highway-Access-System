@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupDto } from 'auth/dtos/auth.dto';
 import { FindEmployeeDto } from 'employees/dtos/employee.dto';
@@ -25,6 +25,13 @@ export class EmployeeService {
 
   create(dto: SignupDto): Promise<Employee> {
     const { name, email, age, position, password } = dto;
+
+    const foundEmployee = this.findOne({ email });
+
+    if (foundEmployee) {
+      throw new BadRequestException('User Already Exists');
+    }
+
     const newUser = new Employee({
       name,
       age,
