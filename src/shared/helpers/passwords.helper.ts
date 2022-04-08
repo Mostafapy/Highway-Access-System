@@ -1,5 +1,5 @@
 import { compare, hash } from 'bcrypt';
-import { SALT } from '../../config/constants/common.constant';
+import { SALT } from '../constants/common.constant';
 
 export const hashPassword = (password: string) => {
   return hash(password, SALT);
