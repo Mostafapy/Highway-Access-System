@@ -32,6 +32,9 @@ export class Employee {
   @Column()
   age: number;
 
+  @Column({ name: 'is_admin', default: false })
+  isAdmin: boolean;
+
   @OneToMany(() => Car, (car) => car.employee)
   cars: Car[];
 
