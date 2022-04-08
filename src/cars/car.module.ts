@@ -5,11 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CarController } from './controllers/car.controller';
 import { AccessCard } from './entities/access-card.entity';
 import { Car } from './entities/car.entity';
+import { Gate } from './entities/gate.entity';
 import { CarService } from './services/car.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Car, AccessCard]),
+    TypeOrmModule.forFeature([Car, AccessCard, Gate]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
