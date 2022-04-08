@@ -112,8 +112,6 @@ export class CarService {
 
     await this.carRepository.delete({ uuid: foundCar.uuid });
 
-    return {
-      message: 'Car deleted successfully',
-    };
+    return;
   }
 }
