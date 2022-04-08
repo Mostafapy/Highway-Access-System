@@ -1,5 +1,4 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
 import { Employee } from 'employees/entities/employee.entity';
 import {
   Column,
@@ -28,13 +27,11 @@ export class Car {
   model: string;
 
   @ApiResponseProperty({ type: String })
-  @Expose({ name: 'plate_number' })
   @Column({ unique: true, name: 'plate_number' })
   plateNumber: string;
 
   @ApiResponseProperty({ type: String })
   @Column({ name: 'employee_uuid' })
-  @Expose({ name: 'employee_uuid' })
   employeeUUID: string;
 
   @ManyToOne(() => Employee, (employee) => employee.cars)
@@ -43,10 +40,8 @@ export class Car {
 
   @ApiResponseProperty({ type: String })
   @Column({ name: 'access_card_uuid', nullable: true })
-  @Expose({ name: 'access_card_uuid' })
   accessCardUUID: string;
 
-  @Expose({ name: 'access_card' })
   @OneToOne(() => AccessCard, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
