@@ -1,7 +1,13 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { AuthProtect } from 'auth/decorators';
 import { AuthUser } from 'auth/decorators/auth-user.decorator';
-import { CreateCarDto, UpdateCarDto } from 'cars/dtos/car.dto';
+import {
+  CreateCarDto,
+  PassHighwayDto,
+  PassHighwayResponseDto,
+  RegisterCarDto,
+  UpdateCarDto,
+} from 'cars/dtos/car.dto';
 import { Car } from 'cars/entities/car.entity';
 import { Gate } from 'cars/entities/gate.entity';
 import { CarService } from 'cars/services/car.service';
@@ -91,17 +97,31 @@ export class CarController {
   }
 
   @AuthProtect()
-  @Put(':uuid/highway/:highwayUUID/register')
+  @Put('/register')
   async registerCar(
     @AuthUser() user: Employee,
-    @Param('uuid') uuid: string,
-    @Param('highwayUUID') highwayUUID: string,
+    @Body() body: RegisterCarDto,
   ): Promise<ResponseDto<Gate>> {
-    const data = await this.carService.registerCarOnHighway(user, uuid, highwayUUID);
+    const data = await this.carService.registerCarOnHighway(user, body);
 
     return {
       statusCode: 200,
       message: 'Your Requested Car has been registered Succesfully',
+      data,
+    };
+  }
+
+  @AuthProtect()
+  @Post('/pass')
+  async passCar(
+    @AuthUser() user: Employee,
+    @Body() body: PassHighwayDto,
+  ): Promise<ResponseDto<PassHighwayResponseDto>> {
+    const data = await this.carService.PassHighway(user, body);
+
+    return {
+      statusCode: 200,
+      message: 'Successfully Passed through the required highway',
       data,
     };
   }

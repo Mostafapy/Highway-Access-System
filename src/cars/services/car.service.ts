@@ -1,6 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateCarDto, UpdateCarDto } from 'cars/dtos/car.dto';
+import {
+  CreateCarDto,
+  PassHighwayDto,
+  PassHighwayResponseDto,
+  RegisterCarDto,
+  UpdateCarDto,
+} from 'cars/dtos/car.dto';
 import { AccessCard } from 'cars/entities/access-card.entity';
 import { Car } from 'cars/entities/car.entity';
 import { Gate } from 'cars/entities/gate.entity';
@@ -135,17 +141,19 @@ export class CarService {
    * Register a car on high way
    */
 
-  async registerCarOnHighway(
-    currentUser: Employee,
-    carUUID: string,
-    highwayUUID: string,
-  ): Promise<Gate> {
+  async registerCarOnHighway(currentUser: Employee, registerCarDto: RegisterCarDto): Promise<Gate> {
+    const { carUUID, highwayUUID } = registerCarDto;
+
     const foundCar = await this.carRepository.findOne({
       where: { uuid: carUUID, employeeUUID: currentUser.uuid },
       relations: ['accessCard'],
     });
 
     if (!foundCar) throw new NotFoundException('Car is not found');
+
+    const foundHighway = await this.highwayRepository.findOne({ where: { uuid: highwayUUID } });
+
+    if (!foundHighway) throw new NotFoundException('highway is not found');
 
     if (foundCar.accessCard) {
       const requiredBalance = foundCar.accessCard.balance + 10;
@@ -161,10 +169,6 @@ export class CarService {
 
     await this.carRepository.save(foundCar);
 
-    const foundHighway = await this.highwayRepository.findOne({ where: { uuid: highwayUUID } });
-
-    if (!foundHighway) throw new NotFoundException('highway is not found');
-
     const newGate = new Gate();
     newGate.carUUID = foundCar.uuid;
     newGate.highwayUUID = foundHighway.uuid;
@@ -172,5 +176,59 @@ export class CarService {
     return this.gateRepository.save(newGate);
   }
 
-  // async PassHighway();
+  async PassHighway(
+    currentUser: Employee,
+    passHighwayDto: PassHighwayDto,
+  ): Promise<PassHighwayResponseDto> {
+    const { uuid, highwayUUID, entryTime, exitTime } = passHighwayDto;
+
+    const foundCar = await this.carRepository.findOne({
+      where: { uuid: uuid, employeeUUID: currentUser.uuid },
+      relations: ['accessCard'],
+    });
+
+    if (!foundCar) throw new NotFoundException('Car is not found');
+
+    const foundHighway = await this.highwayRepository.findOne({ where: { uuid: highwayUUID } });
+
+    if (!foundHighway) throw new NotFoundException('highway is not found');
+
+    if (!foundCar.accessCard) throw new BadRequestException('The Requested car has no access card');
+
+    const gate = await this.gateRepository.findOne({
+      where: { carUUID: uuid, highwayUUID: highwayUUID },
+    });
+
+    if (!gate) throw new NotFoundException('Gate is not found');
+
+    let requiredFees = 4;
+
+    if (gate.passCount == 0) {
+      gate.entryTime = entryTime;
+      gate.exitTime = exitTime;
+    } else {
+      if (
+        gate.passCount % 2 == 0 &&
+        Math.round((entryTime.getTime() - gate.entryTime.getTime()) / 60000) < 1
+      ) {
+        gate.entryTime = entryTime;
+        gate.exitTime = exitTime;
+        requiredFees = 0;
+      }
+    }
+
+    await this.gateRepository.save(gate);
+
+    if (foundCar.accessCard.balance < requiredFees) {
+      throw new BadRequestException('There is no enough balance');
+    }
+
+    const card = await this.AccessCardRepository.save(foundCar.accessCard);
+
+    return {
+      currentBalance: card.balance,
+      carPlateNumber: foundCar.plateNumber,
+      highway: foundHighway.name,
+    };
+  }
 }
