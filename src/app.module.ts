@@ -6,6 +6,7 @@ import { AuthModule } from 'auth/auth.module';
 import { CarModule } from 'cars/car.module';
 import { MYSQL_CONFIG_OPTIONS } from 'config/mysql-configuration';
 import { EmployeeModule } from 'employees/employee.module';
+import { HighwayModule } from 'highways/highway.module';
 import { JoiPipeModule } from 'nestjs-joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -26,6 +27,7 @@ import { validationSchema } from './config/validation';
     EmployeeModule,
     CarModule,
     AuthModule,
+    HighwayModule,
   ],
   controllers: [AppController],
   providers: [
