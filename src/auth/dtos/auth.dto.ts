@@ -1,6 +1,6 @@
-import { ApiProperty, ApiResponse, ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class SignupDto {
   @ApiProperty({ type: String, required: true })
@@ -27,6 +27,11 @@ export class SignupDto {
   @IsNotEmpty()
   @IsNumber()
   readonly age: number;
+
+  @ApiProperty({ type: Boolean, required: true })
+  @IsOptional()
+  @IsNumber()
+  isAdmin?: boolean;
 }
 
 export class loginResponseDto {
