@@ -1,11 +1,11 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AccessCard } from 'access-cards/entities/access-card.entity';
 import { CreateCarDto, UpdateCarDto } from 'cars/dtos/car.dto';
 import { Car } from 'cars/entities/car.entity';
 import { Employee } from 'employees/entities/employee.entity';
 import { decrypt, encrypt } from 'shared/helpers';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 
 @Injectable()
 export class CarService {
@@ -33,9 +33,14 @@ export class CarService {
    * @returns {Promise<Car> | Error}
    */
 
-  async getCar(criteria: string): Promise<Car> {
+  async getCar(user: Employee, criteria: string): Promise<Car> {
+    const conditions: FindOptionsWhere<Car>[] = [{ uuid: criteria }, { plateNumber: criteria }];
+
+    if (!user.isAdmin) {
+      conditions.push({ employeeUUID: user.uuid });
+    }
     const foundCar = await this.carRepository.findOne({
-      where: [{ uuid: criteria }, { plateNumber: criteria }],
+      where: conditions,
     });
 
     if (!foundCar) throw new NotFoundException();
@@ -54,13 +59,7 @@ export class CarService {
   async update(currentUser: Employee, criteria: string, updateCarDto: UpdateCarDto): Promise<Car> {
     const { brand, model, plateNumber } = updateCarDto;
 
-    const foundCar = await this.getCar(criteria);
-
-    if (!foundCar) throw new NotFoundException();
-
-    if (foundCar.employeeUUID != currentUser.uuid) {
-      throw new BadRequestException('This Car is not owned be the current usr');
-    }
+    const foundCar = await this.getCar(currentUser, criteria);
 
     if (brand) foundCar.brand = brand;
 
@@ -96,15 +95,7 @@ export class CarService {
    */
 
   async findOne(currentUser: Employee, criteria: string): Promise<Car> {
-    const foundCar = await this.getCar(criteria);
-
-    if (!foundCar) throw new NotFoundException();
-
-    if (foundCar.employeeUUID != currentUser.uuid) {
-      throw new BadRequestException('This Car is not owned be the current usr');
-    }
-
-    return foundCar;
+    return this.getCar(currentUser, criteria);
   }
 
   /**
@@ -112,13 +103,7 @@ export class CarService {
    */
 
   async delete(currentUser: Employee, criteria: string) {
-    const foundCar = await this.getCar(criteria);
-
-    if (!foundCar) throw new NotFoundException();
-
-    if (foundCar.employeeUUID != currentUser.uuid) {
-      throw new BadRequestException('This Car is not owned be the current usr');
-    }
+    const foundCar = await this.getCar(currentUser, criteria);
 
     // delete related card if exist
     if (foundCar.accessCardUUID) {
