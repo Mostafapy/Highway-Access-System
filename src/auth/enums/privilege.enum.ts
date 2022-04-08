@@ -1,3 +1,3 @@
-export enum Privileges {
+export enum Privilege {
   ADMIN = 'ADMIN',
 }
