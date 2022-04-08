@@ -1,7 +1,6 @@
 version: '3.3'
 services:
   db:
-    container_name: mysqldb
     image: mariadb:latest
     restart: always
     environment:
@@ -19,7 +18,6 @@ services:
       - webnet
 
   api:
-    container_name: highway-access-api
     build: ./
     volumes:
       - .:/apps/highway-access-api
