@@ -1,4 +1,4 @@
-import { hashPassword } from 'shared/helpers/passwords.helper';
+import { hashPassword } from 'shared/helpers';
 import { Car } from 'cars/entities/car.entity';
 import { Exclude, Expose, instanceToPlain } from 'class-transformer';
 import {
