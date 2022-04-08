@@ -58,15 +58,13 @@ export class CarService {
    * @returns {Promise<Car> | Error}
    */
   async update(currentUser: Employee, criteria: string, updateCarDto: UpdateCarDto): Promise<Car> {
-    const { brand, model, plateNumber } = updateCarDto;
-
     const foundCar = await this.getCar(currentUser, criteria);
 
-    if (brand) foundCar.brand = brand;
+    if (updateCarDto.brand) foundCar.brand = updateCarDto.brand;
 
-    if (model) foundCar.model = model;
+    if (updateCarDto.model) foundCar.model = updateCarDto.model;
 
-    if (plateNumber) foundCar.plateNumber = await encrypt(plateNumber);
+    if (updateCarDto.plateNumber) foundCar.plateNumber = await encrypt(updateCarDto.plateNumber);
 
     return this.carRepository.save(foundCar);
   }
@@ -127,4 +125,8 @@ export class CarService {
 
     return;
   }
+
+  /**
+   * Register a car on high way
+   */
 }
