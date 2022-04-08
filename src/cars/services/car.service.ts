@@ -4,7 +4,7 @@ import { AccessCard } from 'access-cards/entities/access-card.entity';
 import { CreateCarDto, UpdateCarDto } from 'cars/dtos/car.dto';
 import { Car } from 'cars/entities/car.entity';
 import { Employee } from 'employees/entities/employee.entity';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CarService {
@@ -20,25 +20,18 @@ export class CarService {
       brand,
       model,
       plateNumber,
-      employeeId: currentUser.id,
+      employeeUUID: currentUser.uuid,
     });
   }
 
   /**
-   * Service to get car info by using either car id or car plate
+   * Service to get car info by using either car uuid or car plate
    * @param criteria
    * @returns {Promise<Car> | Error}
    */
 
-  getCar(criteria: number | string): Promise<Car> {
-    const options: FindOptionsWhere<Car> = {} as FindOptionsWhere<Car>;
-
-    if (typeof criteria == 'string') {
-      options.plateNumber = criteria;
-    } else {
-      options.id = criteria;
-    }
-    return this.carRepository.findOne({ where: options });
+  getCar(criteria: string): Promise<Car> {
+    return this.carRepository.findOne({ where: [{ uuid: criteria }, { plateNumber: criteria }] });
   }
 
   /**
@@ -47,12 +40,16 @@ export class CarService {
    * @param updateCarDto
    * @returns {Promise<Car> | Error}
    */
-  async update(criteria: number | string, updateCarDto: UpdateCarDto): Promise<Car> {
+  async update(currentUser: Employee, criteria: string, updateCarDto: UpdateCarDto): Promise<Car> {
     const { brand, model, plateNumber } = updateCarDto;
 
     const foundCar = await this.getCar(criteria);
 
     if (!foundCar) throw new NotFoundException();
+
+    if (foundCar.employeeUUID != currentUser.uuid) {
+      throw new BadRequestException('This Car is not owned be the current usr');
+    }
 
     if (brand) foundCar.brand = brand;
 
@@ -68,18 +65,23 @@ export class CarService {
    * @param currentUser
    * @returns {Promise<Car[]> | Error}
    */
-  getAll(currentUser: Employee): Promise<Car[]> {
-    return this.carRepository.find({ where: { employeeId: currentUser.id } });
+  findAll(currentUser: Employee): Promise<Car[]> {
+    return this.carRepository.find({ where: { employeeUUID: currentUser.uuid } });
   }
 
-  /** */
+  /**
+   * Find one car with criteria uuid or plate number
+   * @param currentUser
+   * @param criteria
+   * @returns
+   */
 
-  async findOne(currentUser: Employee, criteria: number | string): Promise<Car> {
+  async findOne(currentUser: Employee, criteria: string): Promise<Car> {
     const foundCar = await this.getCar(criteria);
 
     if (!foundCar) throw new NotFoundException();
 
-    if (foundCar.employeeId != currentUser.id) {
+    if (foundCar.employeeUUID != currentUser.uuid) {
       throw new BadRequestException('This Car is not owned be the current usr');
     }
 
@@ -90,21 +92,21 @@ export class CarService {
    * Delete Car Route
    */
 
-  async deleteCar(currentUser: Employee, criteria: number | string) {
+  async delete(currentUser: Employee, criteria: string) {
     const foundCar = await this.getCar(criteria);
 
     if (!foundCar) throw new NotFoundException();
 
-    if (foundCar.employeeId != currentUser.id) {
+    if (foundCar.employeeUUID != currentUser.uuid) {
       throw new BadRequestException('This Car is not owned be the current usr');
     }
 
     // delete related card if exist
-    if (foundCar.accessCardId) {
-      await this.AccessCardRepository.delete({ id: foundCar.accessCardId });
+    if (foundCar.accessCardUUID) {
+      await this.AccessCardRepository.delete({ uuid: foundCar.accessCardUUID });
     }
 
-    await this.carRepository.delete({ id: foundCar.id });
+    await this.carRepository.delete({ uuid: foundCar.uuid });
 
     return {
       message: 'Car deleted successfully',
