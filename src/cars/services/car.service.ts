@@ -5,7 +5,8 @@ import { AccessCard } from 'cars/entities/access-card.entity';
 import { Car } from 'cars/entities/car.entity';
 import { Employee } from 'employees/entities/employee.entity';
 import { decrypt, encrypt } from 'shared/helpers';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { PaginationParams } from 'shared/types/pagination.type';
+import { FindManyOptions, FindOptionsWhere, Repository } from 'typeorm';
 
 @Injectable()
 export class CarService {
@@ -75,8 +76,20 @@ export class CarService {
    * @param currentUser
    * @returns {Promise<Car[]> | Error}
    */
-  async findAll(currentUser: Employee): Promise<Car[]> {
-    const cars = await this.carRepository.find({ where: { employeeUUID: currentUser.uuid } });
+  async findAll(pagination: PaginationParams, currentUser: Employee): Promise<[Car[], number]> {
+    const query: FindOptionsWhere<Car> = {} as FindOptionsWhere<Car>;
+
+    if (!currentUser.isAdmin) {
+      query.employeeUUID = currentUser.uuid;
+    }
+
+    const options: FindManyOptions<Car> = {
+      where: query,
+      take: pagination.limit,
+      skip: pagination.skip,
+    };
+
+    const [cars, total] = await this.carRepository.findAndCount(options);
 
     if (cars.length > 0) {
       for (const car of cars) {
@@ -84,7 +97,7 @@ export class CarService {
       }
     }
 
-    return cars;
+    return [cars, total];
   }
 
   /**
