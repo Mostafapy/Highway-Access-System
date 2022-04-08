@@ -3,7 +3,7 @@ services:
   db:
     container_name: mysqldb
     image: mariadb:latest
-    restarts: always
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: ${TYPEORM_DATABASE}
