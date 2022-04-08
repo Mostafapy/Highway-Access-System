@@ -24,7 +24,7 @@ export class EmployeeService {
   }
 
   create(dto: SignupDto): Promise<Employee> {
-    const { name, email, age, position, password } = dto;
+    const { name, email, age, position, password, isAdmin } = dto;
 
     const foundEmployee = this.findOne({ email });
 
@@ -38,6 +38,7 @@ export class EmployeeService {
       email,
       position,
       password,
+      isAdmin,
     });
 
     return this.employeeRepository.save(newUser);
