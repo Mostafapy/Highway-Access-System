@@ -31,7 +31,7 @@ export class AuthService {
 
   login(user: Employee): loginResponseDto {
     const expiresIn = this.configService.get<number>('jwt.expiresIn');
-    const payload = { email: user.email, sub: user.id };
+    const payload = { email: user.email, uuid: user.uuid };
     return {
       accessToken: this.jwtService.sign(payload),
       tokenValidity: expiresIn,
