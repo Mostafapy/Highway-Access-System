@@ -1,5 +1,4 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
-import { AccessCard } from 'access-cards/entities/access-card.entity';
 import { Expose } from 'class-transformer';
 import { Employee } from 'employees/entities/employee.entity';
 import {
@@ -12,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { AccessCard } from './access-card.entity';
 
 @Entity('cars')
 export class Car {

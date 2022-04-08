@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AccessCard } from 'access-cards/entities/access-card.entity';
 import { CreateCarDto, UpdateCarDto } from 'cars/dtos/car.dto';
+import { AccessCard } from 'cars/entities/access-card.entity';
 import { Car } from 'cars/entities/car.entity';
 import { Employee } from 'employees/entities/employee.entity';
 import { decrypt, encrypt } from 'shared/helpers';
