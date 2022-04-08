@@ -21,17 +21,25 @@ export class CarController {
     return this.carService.findAll(user);
   }
 
+  @AuthProtect()
+  @Get(':criterial')
+  findOne(@AuthUser() user: Employee, @Param('criteria') criteria: string) {
+    return this.carService.findOne(user, criteria);
+  }
+
+  @AuthProtect()
   @Put(':criteria')
   update(
-    @Param('criteria') criteria: string,
     @AuthUser() user: Employee,
+    @Param('criteria') criteria: string,
     @Body() updateCarDto: UpdateCarDto,
   ) {
     return this.carService.update(user, criteria, updateCarDto);
   }
 
+  @AuthProtect()
   @Delete(':criteria')
-  remove(@Param('criteria') criteria: string, @AuthUser() user: Employee) {
+  remove(@AuthUser() user: Employee, @Param('criteria') criteria: string) {
     return this.carService.delete(user, criteria);
   }
 }
