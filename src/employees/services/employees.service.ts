@@ -23,10 +23,10 @@ export class EmployeeService {
     });
   }
 
-  create(dto: SignupDto): Promise<Employee> {
+  async create(dto: SignupDto): Promise<Employee> {
     const { name, email, age, position, password, isAdmin } = dto;
 
-    const foundEmployee = this.findOne({ email });
+    const foundEmployee = await this.findOne({ email });
 
     if (foundEmployee) {
       throw new BadRequestException('User Already Exists');
