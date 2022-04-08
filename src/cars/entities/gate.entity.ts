@@ -21,6 +21,9 @@ export class Gate {
   @Column({ name: 'exit_Time', type: 'datetime', nullable: true })
   exitTime: Date;
 
+  @Column({ name: 'pass_count', default: 0 })
+  passCount: number;
+
   @Column({ name: 'highway_uuid' })
   highwayUUID: string;
 
