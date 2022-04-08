@@ -9,7 +9,7 @@ import { ResponseDto } from 'shared/dtos/response.dto';
 import { getPageDescriptor } from 'shared/helpers';
 import { PaginatedData, PaginationParams } from 'shared/types/pagination.type';
 
-Controller('v1/highways');
+@Controller('v1/highways')
 export class HighwayController {
   constructor(private readonly highwayService: HighwayService) {}
 
