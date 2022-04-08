@@ -4,8 +4,11 @@ import { CreateCarDto, UpdateCarDto } from 'cars/dtos/car.dto';
 import { Car } from 'cars/entities/car.entity';
 import { CarService } from 'cars/services/car.service';
 import { Employee } from 'employees/entities/employee.entity';
+import { Pagination } from 'shared/decorators';
 import { AuthProtect } from 'shared/decorators/auth-protect.decorator';
 import { ResponseDto } from 'shared/dtos/response.dto';
+import { getPageDescriptor } from 'shared/helpers';
+import { PaginatedData, PaginationParams } from 'shared/types/pagination.type';
 
 @Controller('v1/cars')
 export class CarController {
@@ -25,13 +28,19 @@ export class CarController {
 
   @AuthProtect()
   @Get('')
-  async findAll(@AuthUser() user: Employee): Promise<ResponseDto<Car[]>> {
-    const data = await this.carService.findAll(user);
+  async findAll(
+    @Pagination() pagination: PaginationParams,
+    @AuthUser() user: Employee,
+  ): Promise<ResponseDto<PaginatedData<Car>>> {
+    const [data, total] = await this.carService.findAll(pagination, user);
 
     return {
       statusCode: 200,
       message: 'All Car Are Retrieved Succesfully',
-      data,
+      data: {
+        pagination: getPageDescriptor(pagination, total),
+        data,
+      },
     };
   }
 
