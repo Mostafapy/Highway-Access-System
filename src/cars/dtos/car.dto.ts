@@ -31,3 +31,20 @@ export class UpdateCarDto {
   @IsString()
   plateNumber?: string;
 }
+export class PassHighwayDto {
+  @ApiProperty({ required: true, type: String })
+  @IsString()
+  uuid: string;
+
+  @ApiProperty({ required: true, type: String })
+  @IsString()
+  highwayUUID: string;
+
+  @ApiProperty({ required: true, type: Date })
+  @IsString()
+  entryTime: Date;
+
+  @ApiProperty({ required: true, type: Date })
+  @IsString()
+  exitTime: Date;
+}
