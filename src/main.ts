@@ -15,8 +15,8 @@ async function bootstrap() {
    * Swagger implementation config
    */
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Forus API')
-    .setDescription('The Forus Api Documentation')
+    .setTitle('Highway Acces API')
+    .setDescription('The Highway Acces Api Documentation')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
