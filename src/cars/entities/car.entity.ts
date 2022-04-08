@@ -1,3 +1,4 @@
+import { AccessCard } from 'access-cards/entities/access-card.entity';
 import { Expose } from 'class-transformer';
 import { Employee } from 'employees/entities/employee.entity';
 import {
@@ -6,6 +7,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -32,6 +34,18 @@ export class Car {
   @ManyToOne(() => Employee, (employee) => employee.cars)
   @JoinColumn({ name: 'employee_id' })
   employee: Employee;
+
+  @Column({ name: 'access_card_id' })
+  @Expose({ name: 'access_card_id' })
+  accessCardId: number;
+
+  @Expose({ name: 'access_card' })
+  @OneToOne(() => AccessCard, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'access_card_id' })
+  accessCard: AccessCard;
 
   @CreateDateColumn({ name: 'created_at' })
   @Expose({ name: 'created_at' })

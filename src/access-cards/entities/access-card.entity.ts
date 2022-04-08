@@ -1,11 +1,8 @@
-import { Car } from 'cars/entities/car.entity';
 import { Expose } from 'class-transformer';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -26,17 +23,6 @@ export class AccessCard {
     },
   })
   balance: number;
-
-  @Column({ name: 'car_id' })
-  @Expose({ name: 'car_id' })
-  carId: number;
-
-  @OneToOne(() => Car, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn({ name: 'car_id' })
-  car: Car;
 
   @CreateDateColumn({ name: 'created_at' })
   @Expose({ name: 'created_at' })
