@@ -3,7 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCarDto, UpdateCarDto } from 'cars/dtos/car.dto';
 import { AccessCard } from 'cars/entities/access-card.entity';
 import { Car } from 'cars/entities/car.entity';
+import { Gate } from 'cars/entities/gate.entity';
 import { Employee } from 'employees/entities/employee.entity';
+import { Highway } from 'highways/entities/highway.entity';
 import { decrypt, encrypt } from 'shared/helpers';
 import { PaginationParams } from 'shared/types/pagination.type';
 import { FindManyOptions, FindOptionsWhere, Repository } from 'typeorm';
@@ -12,7 +14,10 @@ import { FindManyOptions, FindOptionsWhere, Repository } from 'typeorm';
 export class CarService {
   constructor(
     @InjectRepository(Car) private readonly carRepository: Repository<Car>,
-    @InjectRepository(AccessCard) private readonly AccessCardRepository: Repository<AccessCard>,
+    @InjectRepository(Highway) private readonly highwayRepository: Repository<Highway>,
+    @InjectRepository(Gate) private readonly gateRepository: Repository<Gate>,
+    @InjectRepository(AccessCard)
+    private readonly AccessCardRepository: Repository<AccessCard>,
   ) {}
 
   async create(currentUser: Employee, createCarDto: CreateCarDto): Promise<Car> {
@@ -129,4 +134,37 @@ export class CarService {
   /**
    * Register a car on high way
    */
+
+  async registerCarOnHighway(carUUID: string, highwayUUID: string): Promise<Gate> {
+    const foundCar = await this.carRepository.findOne({
+      where: { uuid: carUUID },
+      relations: ['accessCard'],
+    });
+
+    if (!foundCar) throw new NotFoundException('Car is not found');
+
+    if (foundCar.accessCard) {
+      const requiredBalance = foundCar.accessCard.balance + 10;
+      await this.AccessCardRepository.update(
+        { uuid: foundCar.accessCard.uuid },
+        { balance: requiredBalance },
+      );
+    } else {
+      const newCard = new AccessCard();
+      newCard.balance = 10;
+      await this.AccessCardRepository.save(newCard);
+    }
+
+    await this.carRepository.save(foundCar);
+
+    const foundHighway = await this.highwayRepository.findOne({ where: { uuid: highwayUUID } });
+
+    if (!foundHighway) throw new NotFoundException('highway is not found');
+
+    const newGate = new Gate();
+    newGate.carUUID = foundCar.uuid;
+    newGate.highwayUUID = foundHighway.uuid;
+
+    return this.gateRepository.save(newGate);
+  }
 }
