@@ -36,7 +36,7 @@ export class CarController {
 
     return {
       statusCode: 200,
-      message: 'All Car Are Retrieved Succesfully',
+      message: 'All Cars Are Retrieved Succesfully',
       data: {
         pagination: getPageDescriptor(pagination, total),
         data,
