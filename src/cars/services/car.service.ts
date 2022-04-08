@@ -171,4 +171,6 @@ export class CarService {
 
     return this.gateRepository.save(newGate);
   }
+
+  // async PassHighway();
 }

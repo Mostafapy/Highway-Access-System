@@ -3,6 +3,7 @@ import { AuthProtect } from 'auth/decorators';
 import { AuthUser } from 'auth/decorators/auth-user.decorator';
 import { CreateCarDto, UpdateCarDto } from 'cars/dtos/car.dto';
 import { Car } from 'cars/entities/car.entity';
+import { Gate } from 'cars/entities/gate.entity';
 import { CarService } from 'cars/services/car.service';
 import { Employee } from 'employees/entities/employee.entity';
 import { Pagination } from 'shared/decorators/pagination.decorator';
@@ -86,6 +87,22 @@ export class CarController {
     return {
       statusCode: 200,
       message: 'Your Requested Car is Deleted Succesfully',
+    };
+  }
+
+  @AuthProtect()
+  @Put(':uuid/highway/:highwayUUID/register')
+  async registerCar(
+    @AuthUser() user: Employee,
+    @Param('uuid') uuid: string,
+    @Param('highwayUUID') highwayUUID: string,
+  ): Promise<ResponseDto<Gate>> {
+    const data = await this.carService.registerCarOnHighway(user, uuid, highwayUUID);
+
+    return {
+      statusCode: 200,
+      message: 'Your Requested Car has been registered Succesfully',
+      data,
     };
   }
 }
