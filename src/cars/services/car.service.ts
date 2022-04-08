@@ -135,9 +135,13 @@ export class CarService {
    * Register a car on high way
    */
 
-  async registerCarOnHighway(carUUID: string, highwayUUID: string): Promise<Gate> {
+  async registerCarOnHighway(
+    currentUser: Employee,
+    carUUID: string,
+    highwayUUID: string,
+  ): Promise<Gate> {
     const foundCar = await this.carRepository.findOne({
-      where: { uuid: carUUID },
+      where: { uuid: carUUID, employeeUUID: currentUser.uuid },
       relations: ['accessCard'],
     });
 
