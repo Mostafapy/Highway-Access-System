@@ -15,13 +15,10 @@ export class Gate {
   @PrimaryGeneratedColumn('uuid')
   uuid: string;
 
-  @Column()
-  name: string;
-
-  @Column({ name: 'entry_Time', type: 'datetime' })
+  @Column({ name: 'entry_Time', type: 'datetime', nullable: true })
   entryTime: Date;
 
-  @Column({ name: 'exit_Time', type: 'datetime' })
+  @Column({ name: 'exit_Time', type: 'datetime', nullable: true })
   exitTime: Date;
 
   @Column({ name: 'highway_uuid' })
