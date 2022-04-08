@@ -42,7 +42,7 @@ export class Car {
   employee: Employee;
 
   @ApiResponseProperty({ type: String })
-  @Column({ name: 'access_card_uuid' })
+  @Column({ name: 'access_card_uuid', nullable: true })
   @Expose({ name: 'access_card_uuid' })
   accessCardUUID: string;
 
