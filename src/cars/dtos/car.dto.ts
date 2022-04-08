@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 
 export class CreateCarDto {
@@ -47,4 +47,25 @@ export class PassHighwayDto {
   @ApiProperty({ required: true, type: Date })
   @IsString()
   exitTime: Date;
+}
+
+export class PassHighwayResponseDto {
+  @ApiResponseProperty({ type: Number })
+  currentBalance: number;
+
+  @ApiResponseProperty({ type: String })
+  carPlateNumber: string;
+
+  @ApiResponseProperty({ type: String })
+  highway: string;
+}
+
+export class RegisterCarDto {
+  @ApiProperty({ required: true, type: String })
+  @IsString()
+  carUUID: string;
+
+  @ApiProperty({ required: true, type: String })
+  @IsString()
+  highwayUUID: string;
 }
