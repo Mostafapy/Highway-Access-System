@@ -5,7 +5,7 @@ import { Car } from 'cars/entities/car.entity';
 import { CarService } from 'cars/services/car.service';
 import { Employee } from 'employees/entities/employee.entity';
 import { Pagination } from 'shared/decorators';
-import { AuthProtect } from 'shared/decorators/auth-protect.decorator';
+import { AuthProtect } from 'shared/decorators';
 import { ResponseDto } from 'shared/dtos/response.dto';
 import { getPageDescriptor } from 'shared/helpers';
 import { PaginatedData, PaginationParams } from 'shared/types/pagination.type';
