@@ -4,6 +4,7 @@ import { AccessCard } from 'access-cards/entities/access-card.entity';
 import { CreateCarDto, UpdateCarDto } from 'cars/dtos/car.dto';
 import { Car } from 'cars/entities/car.entity';
 import { Employee } from 'employees/entities/employee.entity';
+import { decrypt, encrypt } from 'shared/helpers';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -16,10 +17,12 @@ export class CarService {
   async create(currentUser: Employee, createCarDto: CreateCarDto): Promise<Car> {
     const { brand, model, plateNumber } = createCarDto;
 
+    const encryptedPlateNumber = await encrypt(plateNumber);
+
     return this.carRepository.create({
       brand,
       model,
-      plateNumber,
+      plateNumber: encryptedPlateNumber,
       employeeUUID: currentUser.uuid,
     });
   }
@@ -30,8 +33,16 @@ export class CarService {
    * @returns {Promise<Car> | Error}
    */
 
-  getCar(criteria: string): Promise<Car> {
-    return this.carRepository.findOne({ where: [{ uuid: criteria }, { plateNumber: criteria }] });
+  async getCar(criteria: string): Promise<Car> {
+    const foundCar = await this.carRepository.findOne({
+      where: [{ uuid: criteria }, { plateNumber: criteria }],
+    });
+
+    if (!foundCar) throw new NotFoundException();
+
+    foundCar.plateNumber = await decrypt(foundCar.plateNumber);
+
+    return foundCar;
   }
 
   /**
@@ -55,7 +66,7 @@ export class CarService {
 
     if (model) foundCar.model = model;
 
-    if (plateNumber) foundCar.plateNumber = plateNumber;
+    if (plateNumber) foundCar.plateNumber = await encrypt(plateNumber);
 
     return this.carRepository.save(foundCar);
   }
@@ -65,8 +76,16 @@ export class CarService {
    * @param currentUser
    * @returns {Promise<Car[]> | Error}
    */
-  findAll(currentUser: Employee): Promise<Car[]> {
-    return this.carRepository.find({ where: { employeeUUID: currentUser.uuid } });
+  async findAll(currentUser: Employee): Promise<Car[]> {
+    const cars = await this.carRepository.find({ where: { employeeUUID: currentUser.uuid } });
+
+    if (cars.length > 0) {
+      for (const car of cars) {
+        car.plateNumber = await decrypt(car.plateNumber);
+      }
+    }
+
+    return cars;
   }
 
   /**
