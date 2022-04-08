@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { loginResponseDto, SignupDto } from 'auth/dtos/auth.dto';
-import { comparePasswords } from 'auth/helpers/passwords.helper';
+import { comparePasswords } from 'shared/helpers/passwords.helper';
 import { Employee } from 'employees/entities/employee.entity';
 import { EmployeeService } from 'employees/services/employees.service';
 
