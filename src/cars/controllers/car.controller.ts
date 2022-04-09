@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthProtect } from 'auth/decorators';
 import { AuthUser } from 'auth/decorators/auth-user.decorator';
 import {
@@ -17,11 +18,14 @@ import { ResponseDto } from 'shared/dtos/response.dto';
 import { getPageDescriptor } from 'shared/helpers';
 import { PaginatedData, PaginationParams } from 'shared/types/pagination.type';
 
+@ApiTags('v1/cars')
+@AuthProtect()
 @Controller('v1/cars')
 export class CarController {
   constructor(private readonly carService: CarService) {}
 
-  @AuthProtect()
+  @ApiOperation({ summary: 'Create Car' })
+  @ApiResponse({ status: 201 })
   @Post('')
   async create(@AuthUser() user: Employee, @Body() body: CreateCarDto): Promise<ResponseDto<Car>> {
     const data = await this.carService.create(user, body);
@@ -33,7 +37,8 @@ export class CarController {
     };
   }
 
-  @AuthProtect()
+  @ApiOperation({ summary: 'Retrieve Car' })
+  @ApiResponse({ status: 200 })
   @Get('')
   async findAll(
     @Pagination() pagination: PaginationParams,
@@ -51,7 +56,8 @@ export class CarController {
     };
   }
 
-  @AuthProtect()
+  @ApiOperation({ summary: 'Retrieve One Car' })
+  @ApiResponse({ status: 200 })
   @Get(':criterial')
   async findOne(
     @AuthUser() user: Employee,
@@ -66,7 +72,8 @@ export class CarController {
     };
   }
 
-  @AuthProtect()
+  @ApiOperation({ summary: 'Update Car' })
+  @ApiResponse({ status: 200 })
   @Put(':criteria')
   async update(
     @AuthUser() user: Employee,
@@ -82,7 +89,8 @@ export class CarController {
     };
   }
 
-  @AuthProtect()
+  @ApiOperation({ summary: 'Delete Car' })
+  @ApiResponse({ status: 200 })
   @Delete(':criteria')
   async remove(
     @AuthUser() user: Employee,
@@ -96,7 +104,8 @@ export class CarController {
     };
   }
 
-  @AuthProtect()
+  @ApiOperation({ summary: 'Register Car On Highway' })
+  @ApiResponse({ status: 200 })
   @Put('/register')
   async registerCar(
     @AuthUser() user: Employee,
@@ -111,7 +120,8 @@ export class CarController {
     };
   }
 
-  @AuthProtect()
+  @ApiOperation({ summary: 'Pass Car On Highway' })
+  @ApiResponse({ status: 200 })
   @Post('/pass')
   async passCar(
     @AuthUser() user: Employee,

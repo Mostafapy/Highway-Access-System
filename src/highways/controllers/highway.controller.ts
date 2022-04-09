@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthProtect } from 'auth/decorators';
 import { Privilege } from 'auth/enums/privilege.enum';
 import { CreateHighWayDto, UpdateHighWayDto } from 'highways/dtos/highway.dto';
@@ -9,10 +10,13 @@ import { ResponseDto } from 'shared/dtos/response.dto';
 import { getPageDescriptor } from 'shared/helpers';
 import { PaginatedData, PaginationParams } from 'shared/types/pagination.type';
 
+@ApiTags('v1/highways')
 @Controller('v1/highways')
 export class HighwayController {
   constructor(private readonly highwayService: HighwayService) {}
 
+  @ApiOperation({ summary: 'Create Highway' })
+  @ApiResponse({ status: 201 })
   @AuthProtect(Privilege.ADMIN)
   @Post('')
   async create(@Body() body: CreateHighWayDto): Promise<ResponseDto<Highway>> {
@@ -25,6 +29,8 @@ export class HighwayController {
     };
   }
 
+  @ApiOperation({ summary: 'Retrieve Highways' })
+  @ApiResponse({ status: 200 })
   @AuthProtect(Privilege.ADMIN)
   @Get('')
   async findAll(
@@ -42,6 +48,8 @@ export class HighwayController {
     };
   }
 
+  @ApiOperation({ summary: 'Get One Highway By ID' })
+  @ApiResponse({ status: 200 })
   @AuthProtect(Privilege.ADMIN)
   @Get(':uuid')
   async findOne(@Param('uuid') uuid: string): Promise<ResponseDto<Highway>> {
@@ -54,6 +62,8 @@ export class HighwayController {
     };
   }
 
+  @ApiOperation({ summary: 'Update Highway By ID' })
+  @ApiResponse({ status: 200 })
   @AuthProtect(Privilege.ADMIN)
   @Put(':uuid')
   async update(
@@ -69,6 +79,8 @@ export class HighwayController {
     };
   }
 
+  @ApiOperation({ summary: 'Delete Highway By ID' })
+  @ApiResponse({ status: 200 })
   @AuthProtect(Privilege.ADMIN)
   @Delete(':uuid')
   async remove(@Param('uuid') uuid: string): Promise<ResponseDto<any>> {
