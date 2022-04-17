@@ -207,21 +207,24 @@ export class CarService {
       gate.entryTime = entryTime;
       gate.exitTime = exitTime;
     } else {
-      if (
-        gate.passCount % 2 == 0 &&
-        Math.round((entryTime.getTime() - gate.entryTime.getTime()) / 60000) < 1
-      ) {
-        gate.entryTime = entryTime;
-        gate.exitTime = exitTime;
-        requiredFees = 0;
+      if (gate.passCount % 2 == 0) {
+        if (Math.round((entryTime.getTime() - gate.entryTime.getTime()) / 60000) < 1) {
+          requiredFees = 0;
+        }
       }
+      gate.entryTime = entryTime;
+      gate.exitTime = exitTime;
     }
+
+    gate.passCount += 1;
 
     await this.gateRepository.save(gate);
 
     if (foundCar.accessCard.balance < requiredFees) {
       throw new BadRequestException('There is no enough balance');
     }
+
+    foundCar.accessCard.balance = foundCar.accessCard.balance - requiredFees;
 
     const card = await this.AccessCardRepository.save(foundCar.accessCard);
 
